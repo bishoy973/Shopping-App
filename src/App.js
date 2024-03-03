@@ -1,24 +1,67 @@
-import logo from './logo.svg';
 import './App.css';
+import { Fragment, useContext, useEffect } from 'react';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import Layout from './Components/Layout/Layout';
+import Home from './Components/Home/Home';
+import Category from './Components/Categories/Category';
+import Register from './Components/Register/Register.jsx';
+import Login from './Components/Login/Login.jsx';
+import Logout from './Components/Logout/Logout';
+import  { tokenContext } from './Context/TokenContext.js';
+import ProtectedRoutes from './Context/ProtectedRoutes.js';
+import Brands from './Components/Brands/Brands.jsx';
+import Products from './Components/Products/Products.jsx';
+import ProductDetails from './Components/ProductDetails/ProductDetails.jsx';
+import Cart from './Components/Cart/Cart';
+import ErrorPage from './Components/Error404/Error.jsx';
+import Checkout from './Components/Checkout/Checkout.jsx';
+import SpecificCategory from './Components/SpecificCategory/specificCategory.jsx';
+import Wishlist from './Components/WishList/Wishlist.jsx';
+import Forgotpassword from './Components/ForgotPassword/Forgotpassword.jsx';
+import VerifyresetPassword from './Components/VerifyPassword/VerifyPassword.jsx';
+import ResetUSer from './Components/ResetUser/ResetUSer.jsx';
+import Allorders from './Components/AllOrders/Allorders.jsx';
+
+
+
 
 function App() {
+const {setToken} = useContext(tokenContext)
+
+  useEffect(()=>{
+if (localStorage.getItem("userToken") != null){
+  setToken(localStorage.getItem("userToken"))
+}
+  },[])
+
+
+
+  let routes = createBrowserRouter([{
+    path:"",element:<Layout/>,children:[
+      {index:true,  element:<ProtectedRoutes><Home/></ProtectedRoutes>},
+      {path:"products",element:<ProtectedRoutes><Products/></ProtectedRoutes>},
+      {path:"cart",element:<ProtectedRoutes><Cart/></ProtectedRoutes>},
+      {path:"brands",element:<ProtectedRoutes><Brands/></ProtectedRoutes>},
+      {path:"categories",element:<ProtectedRoutes><Category/></ProtectedRoutes>},
+      {path:"categories/:catID", element:<ProtectedRoutes><SpecificCategory/></ProtectedRoutes>},
+      {path:"details/:id", element:<ProtectedRoutes><ProductDetails/></ProtectedRoutes>},
+{path:"checkout/:pid",element:<ProtectedRoutes><Checkout/></ProtectedRoutes>},
+{path:"forgotpassword" , element:<Forgotpassword/>},
+{path:"VerifyresetPassword" , element:<VerifyresetPassword/>},
+{path:"whishlist" , element:<ProtectedRoutes><Wishlist/></ProtectedRoutes>},
+{path:"allorders" , element:<ProtectedRoutes><Allorders/></ProtectedRoutes>},
+{path:"resetuser",element:<ResetUSer/>},
+    {path:"register",element:<Register/>},
+    {path:"login",element:<Login/>},
+    {path:"logout",element:<Logout/>},
+    {path:"*", element:<ErrorPage/>}
+    ]
+  }])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+  
+<RouterProvider router={routes}></RouterProvider>   
+ </Fragment>
   );
 }
 
